@@ -1,8 +1,12 @@
 package main
 
-import "timenote/router"
+import (
+	"timenote/db"
+	"timenote/router"
+)
 
 func main() {
+	db.InitDB()
 	r := router.SetUpRouter()
 	r.Run()
 }

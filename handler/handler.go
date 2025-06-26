@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"timenote/db"
 	"timenote/model"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +28,6 @@ func CreateActivityLogHandler(c *gin.Context) {
 		return
 	}
 
-	// 仮のユーザーID（本来は認証済ユーザーID）
 	userID := uuid.New()
 
 	activityLog := model.ActivityLog{
@@ -42,7 +42,10 @@ func CreateActivityLogHandler(c *gin.Context) {
 		Path:      "",
 	}
 
-	// TODO: DBに保存する処理（Repository層）
+	if err := db.DB.Create(&activityLog); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "faild to save!!"})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"id":      activityLog.ID,
